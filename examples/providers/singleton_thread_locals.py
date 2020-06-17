@@ -1,7 +1,7 @@
 """`ThreadLocalSingleton` providers example."""
 
 import threading
-import Queue
+import queue
 
 import dependency_injector.providers as providers
 
@@ -15,12 +15,12 @@ def example(example_object, queue):
 thread_local_object = providers.ThreadLocalSingleton(object)
 
 # Create singleton provider for thread-safe queue:
-queue = providers.Singleton(Queue.Queue)
+queue_factory = providers.TheadSaveSingleton(queue.Queue)
 
 # Create callable provider for example(), inject dependencies:
 example = providers.DelegatedCallable(example,
                                       example_object=thread_local_object,
-                                      queue=queue)
+                                      queue=queue_factory)
 
 # Create factory provider for threads that are targeted to execute example():
 thread_factory = providers.Factory(threading.Thread,
